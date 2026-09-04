@@ -2,9 +2,9 @@ export const site = {
   name: "Anurag Mishra",
   shortName: "AM",
   role: "Full Stack Developer",
-  email: "hello@anuragmishra.dev",
-  github: "https://github.com/",
-  linkedin: "https://www.linkedin.com/",
+  email: "anuragjainathmishra@gmail.com",
+  github: "https://github.com/anuragnibhamishra",
+  linkedin: "https://www.linkedin.com/in/anuragnibhamishra/",
   availability: "Available for opportunities",
 };
 

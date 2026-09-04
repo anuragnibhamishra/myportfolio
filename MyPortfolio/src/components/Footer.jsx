@@ -64,7 +64,7 @@ export default function Footer() {
           </a>
         </div>
       </div>
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 border-t border-fg/8 px-5 py-8 text-[11px] uppercase tracking-[0.2em] text-fg-muted md:flex-row md:items-center md:justify-between md:px-8">
+      <div className="mx-auto flex  flex-col gap-6 border-t border-fg/8 px-5 py-8 text-[11px] uppercase tracking-[0.2em] text-fg-muted md:flex-row md:items-center md:justify-between md:px-8">
         <p>Designed &amp; built with curiosity.</p>
         
         <p>© {year} {site.name}</p>
