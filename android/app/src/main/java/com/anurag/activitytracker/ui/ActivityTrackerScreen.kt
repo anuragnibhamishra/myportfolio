@@ -1,5 +1,9 @@
 package com.anurag.activitytracker.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,17 +24,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import android.content.Intent
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.anurag.activitytracker.data.ActivityMapping
 import com.anurag.activitytracker.data.AppMapping
-import com.anurag.activitytracker.usage.UsageStatsReader
+import com.anurag.activitytracker.data.TrackingStateStore
+import com.anurag.activitytracker.service.ActivityTrackingService
 import com.anurag.activitytracker.utils.UsageAccessPermission
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -39,26 +47,29 @@ import kotlinx.coroutines.isActive
 fun ActivityTrackerScreen() {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val usageStatsReader = remember { UsageStatsReader(context) }
+    val stateStore = remember { TrackingStateStore(context) }
     var hasUsageAccess by remember { mutableStateOf(UsageAccessPermission.isGranted(context)) }
-    var packageName by remember { mutableStateOf<String?>(null) }
+    var trackingState by remember { mutableStateOf(stateStore.read()) }
+    val startTracking = {
+        val intent = Intent(context, ActivityTrackingService::class.java)
+        ContextCompat.startForegroundService(context, intent)
+    }
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+        onResult = { startTracking() }
+    )
 
-    LaunchedEffect(lifecycleOwner, usageStatsReader) {
+    LaunchedEffect(lifecycleOwner, stateStore) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             while (isActive) {
                 hasUsageAccess = UsageAccessPermission.isGranted(context)
-                packageName = if (hasUsageAccess) {
-                    usageStatsReader.mostRecentlyForegroundedPackage()
-                } else {
-                    null
-                }
+                trackingState = stateStore.read()
                 delay(2_000)
             }
         }
     }
 
-    val displayName = packageName?.let(AppMapping::displayNameFor)
-    val publicActivity = displayName?.let(ActivityMapping::publicActivityFor)
+    val displayName = trackingState.packageName?.let(AppMapping::displayNameFor)
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
@@ -73,6 +84,11 @@ fun ActivityTrackerScreen() {
             Spacer(Modifier.height(12.dp))
             PermissionStatus(hasUsageAccess)
 
+            Spacer(Modifier.height(32.dp))
+            Text("Tracking", style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(12.dp))
+            TrackingStatus(trackingState.isTracking)
+
             if (!hasUsageAccess) {
                 Spacer(Modifier.height(28.dp))
                 Button(
@@ -84,17 +100,49 @@ fun ActivityTrackerScreen() {
                 ) {
                     Text("Grant Usage Access")
                 }
+            } else if (!trackingState.isTracking) {
+                Spacer(Modifier.height(24.dp))
+                Button(
+                    onClick = {
+                        if (
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                            context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+                            PackageManager.PERMISSION_GRANTED
+                        ) {
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        } else {
+                            startTracking()
+                        }
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Start Tracking")
+                }
             } else {
-                Spacer(Modifier.height(40.dp))
+                Spacer(Modifier.height(28.dp))
+                Button(
+                    onClick = {
+                        val intent = Intent(context, ActivityTrackingService::class.java)
+                            .setAction(ActivityTrackingService.ACTION_STOP)
+                        context.startService(intent)
+                    },
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Stop Tracking")
+                }
+                Spacer(Modifier.height(32.dp))
                 Text("Current Application", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(16.dp))
-                if (packageName == null) {
+                if (trackingState.packageName == null) {
                     Text("Detecting...", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 } else {
                     Text(displayName.orEmpty(), style = MaterialTheme.typography.headlineSmall)
                     Spacer(Modifier.height(4.dp))
-                    Text(packageName.orEmpty(), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    publicActivity?.let {
+                    Text(trackingState.packageName.orEmpty(), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    trackingState.activityName?.let {
                         Spacer(Modifier.height(16.dp))
                         Text(it, color = MaterialTheme.colorScheme.primary)
                     }
@@ -113,5 +161,17 @@ private fun PermissionStatus(granted: Boolean) {
         )
         Spacer(Modifier.width(10.dp))
         Text(if (granted) "Granted" else "Not Granted")
+    }
+}
+
+@Composable
+private fun TrackingStatus(active: Boolean) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = if (active) "●" else "○",
+            color = if (active) Color(0xFF86EFAC) else MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.width(10.dp))
+        Text(if (active) "Tracking Active" else "Tracking Stopped")
     }
 }
