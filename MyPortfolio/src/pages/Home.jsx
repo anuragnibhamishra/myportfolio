@@ -9,7 +9,7 @@ import SectionHeading from "../components/SectionHeading";
 import Seo from "../components/Seo";
 import TechBadge from "../components/TechBadge";
 import { featuredProjects } from "../data/projects";
-import { currentlyBuilding, site, techStack, activity } from "../data/site";
+import { currentlyBuilding, site, techStack } from "../data/site";
 import LiveActivity from "../components/LiveActivity";
 
 const headline = ["Building digital experiences", "that feel alive."];
@@ -28,7 +28,7 @@ export default function Home() {
               <span>Full Stack Developer</span>
               <span className="hidden h-px min-w-4 max-w-6 flex-1 bg-fg/20 sm:block" />
               <span className="inline-flex items-center gap-2 tracking-[0.2em] text-accent">
-                <LiveActivity activity={activity} />
+                <LiveActivity />
               </span>
             </div>
             <h1 className="max-w-5xl text-[12vw] font-medium leading-[0.92] tracking-tight text-fg sm:text-6xl md:text-7xl lg:text-8xl">
