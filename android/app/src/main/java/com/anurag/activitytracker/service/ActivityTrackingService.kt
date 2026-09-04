@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -32,6 +33,9 @@ class ActivityTrackingService : Service() {
     private lateinit var stateStore: TrackingStateStore
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var trackingJob: Job? = null
+    private var networkJob: Job? = null
+    private var pendingActivity: ClassifiedActivity? = null
+    private val networkLock = Any()
     private var lastSentPackage: String? = null
     private var lastSentActivity: String? = null
 
@@ -49,7 +53,7 @@ class ActivityTrackingService : Service() {
             ACTION_STOP -> stopTracking()
             else -> startTracking()
         }
-        return START_NOT_STICKY
+        return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -89,7 +93,7 @@ class ActivityTrackingService : Service() {
                         )
                         lastSentPackage = classifiedActivity.packageName
                         lastSentActivity = classifiedActivity.action
-                        sendActivity(classifiedActivity)
+                        enqueueActivity(classifiedActivity)
                     }
                 }
                 delay(POLL_INTERVAL_MILLIS)
@@ -97,25 +101,53 @@ class ActivityTrackingService : Service() {
         }
     }
 
-    private fun sendActivity(activity: ClassifiedActivity) {
-        serviceScope.launch(Dispatchers.IO) {
-            try {
-                Log.d(TAG, "Sending activity to backend...")
-                val response = ActivityApiClient.api.createActivity(
-                    ActivityRequest(
-                        app = activity.app,
-                        packageName = activity.packageName,
-                        action = activity.action,
-                        startedAt = System.currentTimeMillis()
-                    )
-                )
-                if (response.isSuccessful) {
-                    Log.d(TAG, "Backend response: ${response.code()}")
-                } else {
-                    Log.e(TAG, "Backend response: ${response.code()}")
+    private fun enqueueActivity(activity: ClassifiedActivity) {
+        synchronized(networkLock) {
+            pendingActivity = activity
+            if (networkJob?.isActive != true) {
+                networkJob = serviceScope.launch(Dispatchers.IO) {
+                    processPendingActivities()
                 }
-            } catch (exception: Exception) {
-                Log.e(TAG, "Failed to send activity to backend", exception)
+            }
+        }
+    }
+
+    private suspend fun processPendingActivities() {
+        while (currentCoroutineContext().isActive) {
+            val activity = synchronized(networkLock) {
+                pendingActivity.also {
+                    pendingActivity = null
+                    if (it == null) {
+                        networkJob = null
+                    }
+                }
+            } ?: return
+
+            var delivered = false
+            while (currentCoroutineContext().isActive && !delivered) {
+                try {
+                    Log.d(TAG, "Sending activity to backend...")
+                    val response = ActivityApiClient.api.createActivity(
+                        ActivityRequest(
+                            app = activity.app,
+                            packageName = activity.packageName,
+                            action = activity.action,
+                            startedAt = System.currentTimeMillis()
+                        )
+                    )
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "Backend response: ${response.code()}")
+                        delivered = true
+                    } else {
+                        Log.e(TAG, "Backend response: ${response.code()}; retrying later")
+                    }
+                } catch (exception: Exception) {
+                    Log.e(TAG, "Failed to send activity to backend; retrying later", exception)
+                }
+
+                if (!delivered) {
+                    delay(RETRY_DELAY_MILLIS)
+                }
             }
         }
     }
@@ -153,5 +185,6 @@ class ActivityTrackingService : Service() {
         const val CHANNEL_ID = "activity_tracking"
         const val NOTIFICATION_ID = 1001
         const val POLL_INTERVAL_MILLIS = 2_000L
+        const val RETRY_DELAY_MILLIS = 30_000L
     }
 }

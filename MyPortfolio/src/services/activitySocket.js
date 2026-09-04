@@ -3,8 +3,6 @@ import { io } from "socket.io-client";
 const SOCKET_URL = import.meta.env.VITE_ACTIVITY_API_URL ||
   "https://myportfolio-production-5da1.up.railway.app";
 
-console.info("[ActivityTracker] Initializing Socket.IO client");
-console.info(`[ActivityTracker] Connecting to: ${SOCKET_URL}`);
 
 const socket = io(SOCKET_URL, {
   autoConnect: false,
