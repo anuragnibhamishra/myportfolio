@@ -8,16 +8,42 @@ function parsePort(value: string | undefined): number {
   return port;
 }
 
-const allowedOrigins = (process.env.ALLOWED_ORIGIN ?? "http://localhost:5173")
+function parseAllowedOrigins(value: string | undefined): string[] {
+  const origins = (value ?? "http://localhost:5173")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-if (allowedOrigins.length === 0) {
-  throw new Error("ALLOWED_ORIGIN must contain at least one origin");
+  if (origins.length === 0) {
+    throw new Error("ALLOWED_ORIGIN must contain at least one origin");
+  }
+
+  for (const origin of origins) {
+    let parsedOrigin: URL;
+    try {
+      parsedOrigin = new URL(origin);
+    } catch {
+      throw new Error(`ALLOWED_ORIGIN contains an invalid origin: ${origin}`);
+    }
+
+    if (["http:", "https:"].includes(parsedOrigin.protocol) === false || parsedOrigin.pathname !== "/" || parsedOrigin.search || parsedOrigin.hash) {
+      throw new Error(`ALLOWED_ORIGIN contains an invalid origin: ${origin}`);
+    }
+  }
+
+  return origins;
 }
 
-export const env = {
-  port: parsePort(process.env.PORT),
-  allowedOrigins,
-};
+function loadEnv() {
+  try {
+    return {
+      port: parsePort(process.env.PORT),
+      allowedOrigins: parseAllowedOrigins(process.env.ALLOWED_ORIGIN),
+    };
+  } catch (error) {
+    console.error(`Configuration error: ${error instanceof Error ? error.message : error}`);
+    process.exit(1);
+  }
+}
+
+export const env = loadEnv();

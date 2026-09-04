@@ -9,6 +9,11 @@ const httpServer = createServer(app);
 socketService.setCurrentActivityProvider(() => activityService.getCurrentActivity());
 socketService.initialize(httpServer);
 
-httpServer.listen(env.port, () => {
-  console.info(`Activity Tracker API listening on http://localhost:${env.port}`);
+httpServer.on("error", (error) => {
+  console.error("Activity Tracker server startup error", error);
+  process.exitCode = 1;
+});
+
+httpServer.listen(env.port, "0.0.0.0", () => {
+  console.info(`Activity Tracker API listening on port ${env.port}`);
 });

@@ -1,6 +1,6 @@
 # Activity Tracker Backend
 
-A small TypeScript/Express API that accepts the Android activity payload and stores only the latest activity in memory. It is intentionally local and does not include authentication, a database, WebSockets, or portfolio integration.
+A small TypeScript/Express API that accepts the Android activity payload and stores only the latest activity in memory. It also broadcasts activity changes with Socket.IO. It does not include authentication, a database, or portfolio integration.
 
 ## Setup
 
@@ -19,7 +19,7 @@ ALLOWED_ORIGIN=http://localhost:5173
 
 `ALLOWED_ORIGIN` accepts a comma-separated list of specific origins. Do not use `*` for production.
 
-## Run
+## Run locally
 
 Development with watch mode:
 
@@ -39,7 +39,27 @@ Start the compiled server:
 npm start
 ```
 
-The default server URL is `http://localhost:5000`.
+The default server URL is `http://localhost:5000`. The server binds to `0.0.0.0`, so it can also accept connections on the host machine's LAN address.
+
+## Production
+
+Set the required environment variables in the hosting platform:
+
+```env
+PORT=5000
+ALLOWED_ORIGIN=https://your-portfolio-domain.example
+```
+
+`PORT` is supplied by most hosting platforms and falls back to `5000` locally. `ALLOWED_ORIGIN` must contain one or more comma-separated `http` or `https` origins. Wildcard origins are not accepted.
+
+Build and start the compiled server:
+
+```powershell
+npm run build
+npm start
+```
+
+The HTTP server and Socket.IO share the same port. The hosting platform must support long-lived HTTP connections and WebSocket upgrades for Socket.IO.
 
 ## API
 
@@ -109,6 +129,17 @@ curl.exe http://localhost:5000/api/activity/current
 ```
 
 The final response contains `"data": null`.
+
+## Socket.IO
+
+Connect Socket.IO clients to the server URL. The server emits `activity:update` when a new activity differs from the current activity, and emits `activity:update` with `null` when the activity is cleared. On connection, the client receives the current in-memory activity through `activity:current`, or `null` when none exists.
+
+For a local smoke test, run the backend in one terminal and the client in another:
+
+```powershell
+npm run dev
+npm run socket:test
+```
 
 ## Validation and errors
 
