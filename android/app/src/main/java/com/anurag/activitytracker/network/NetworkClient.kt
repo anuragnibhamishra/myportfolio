@@ -4,7 +4,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkConfig {
-    const val BASE_URL = "http://192.168.43.102:5000/"
+    // Production is the default for physical-device builds.
+    const val BASE_URL = "https://myportfolio-production-5da1.up.railway.app/"
+
+    // Development fallback for a local server on the Android emulator or LAN device.
+    const val LOCAL_BASE_URL = "http://localhost:5000/"
 }
 
 object ActivityApiClient {
