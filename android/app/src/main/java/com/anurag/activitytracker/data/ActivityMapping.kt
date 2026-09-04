@@ -5,8 +5,9 @@ object ActivityMapping {
         "Instagram" to "Scrolling Instagram",
         "YouTube" to "Watching YouTube",
         "Spotify" to "Listening to Spotify",
-        "VS Code" to "Coding",
-        "Chrome" to "Browsing"
+        "Chess" to "Playing Chess",
+        "Chrome" to "Browsing Chrome",
+        "WhatsApp" to "Available on WhatsApp"
     )
 
     fun publicActivityFor(displayName: String): String? = activities[displayName]

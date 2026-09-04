@@ -7,11 +7,15 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.anurag.activitytracker.R
-import com.anurag.activitytracker.data.ActivityMapping
-import com.anurag.activitytracker.data.AppMapping
+import com.anurag.activitytracker.data.ActivityClassifier
+import com.anurag.activitytracker.data.ClassifiedActivity
 import com.anurag.activitytracker.data.TrackingStateStore
+import com.anurag.activitytracker.network.ActivityApiClient
+import com.anurag.activitytracker.network.ActivityRequest
+import com.anurag.activitytracker.system.LockStateDetector
 import com.anurag.activitytracker.usage.UsageStatsReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,13 +28,17 @@ import kotlinx.coroutines.launch
 
 class ActivityTrackingService : Service() {
     private lateinit var usageStatsReader: UsageStatsReader
+    private lateinit var lockStateDetector: LockStateDetector
     private lateinit var stateStore: TrackingStateStore
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var trackingJob: Job? = null
+    private var lastSentPackage: String? = null
+    private var lastSentActivity: String? = null
 
     override fun onCreate() {
         super.onCreate()
         usageStatsReader = UsageStatsReader(this)
+        lockStateDetector = LockStateDetector(this)
         stateStore = TrackingStateStore(this)
         createNotificationChannel()
         startForeground(NOTIFICATION_ID, buildNotification())
@@ -61,12 +69,53 @@ class ActivityTrackingService : Service() {
         trackingJob = serviceScope.launch {
             while (isActive) {
                 val packageName = usageStatsReader.mostRecentlyForegroundedPackage()
-                if (!packageName.isNullOrBlank()) {
-                    val appName = AppMapping.displayNameFor(packageName)
-                    val activityName = ActivityMapping.publicActivityFor(appName)
-                    stateStore.setDetectedActivity(packageName, activityName)
+                val classifiedActivity = ActivityClassifier.classify(
+                    packageName,
+                    lockStateDetector.isLocked()
+                )
+                if (classifiedActivity != null) {
+                    stateStore.setDetectedActivity(
+                        classifiedActivity.packageName,
+                        classifiedActivity.action
+                    )
+                    if (
+                        classifiedActivity.packageName != lastSentPackage ||
+                        classifiedActivity.action != lastSentActivity
+                    ) {
+                        Log.d(
+                            TAG,
+                            "Activity detected: ${classifiedActivity.app} / " +
+                                "${classifiedActivity.packageName} / ${classifiedActivity.action}"
+                        )
+                        lastSentPackage = classifiedActivity.packageName
+                        lastSentActivity = classifiedActivity.action
+                        sendActivity(classifiedActivity)
+                    }
                 }
                 delay(POLL_INTERVAL_MILLIS)
+            }
+        }
+    }
+
+    private fun sendActivity(activity: ClassifiedActivity) {
+        serviceScope.launch(Dispatchers.IO) {
+            try {
+                Log.d(TAG, "Sending activity to backend...")
+                val response = ActivityApiClient.api.createActivity(
+                    ActivityRequest(
+                        app = activity.app,
+                        packageName = activity.packageName,
+                        action = activity.action,
+                        startedAt = System.currentTimeMillis()
+                    )
+                )
+                if (response.isSuccessful) {
+                    Log.d(TAG, "Backend response: ${response.code()}")
+                } else {
+                    Log.e(TAG, "Backend response: ${response.code()}")
+                }
+            } catch (exception: Exception) {
+                Log.e(TAG, "Failed to send activity to backend", exception)
             }
         }
     }
@@ -99,6 +148,7 @@ class ActivityTrackingService : Service() {
     }
 
     companion object {
+        private const val TAG = "ActivityTrackingService"
         const val ACTION_STOP = "com.anurag.activitytracker.action.STOP"
         const val CHANNEL_ID = "activity_tracking"
         const val NOTIFICATION_ID = 1001

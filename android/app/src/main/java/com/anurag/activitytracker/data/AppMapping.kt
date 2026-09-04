@@ -7,13 +7,17 @@ data class KnownApp(
 
 object AppMapping {
     private val knownApps = listOf(
-        KnownApp("com.instagram.android", "Instagram"),
-        KnownApp("com.google.android.youtube", "YouTube"),
         KnownApp("com.spotify.music", "Spotify"),
+        KnownApp("com.google.android.youtube", "YouTube"),
+        KnownApp("com.instagram.android", "Instagram"),
+        KnownApp("com.chess", "Chess"),
         KnownApp("com.android.chrome", "Chrome"),
-        KnownApp("com.microsoft.vscode", "VS Code")
+        KnownApp("com.whatsapp", "WhatsApp")
     )
 
+    fun knownAppFor(packageName: String): KnownApp? =
+        knownApps.firstOrNull { it.packageName == packageName }
+
     fun displayNameFor(packageName: String): String =
-        knownApps.firstOrNull { it.packageName == packageName }?.displayName ?: packageName
+        knownAppFor(packageName)?.displayName ?: packageName
 }

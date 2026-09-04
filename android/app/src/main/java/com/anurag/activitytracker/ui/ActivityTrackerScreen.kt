@@ -70,6 +70,7 @@ fun ActivityTrackerScreen() {
     }
 
     val displayName = trackingState.packageName?.let(AppMapping::displayNameFor)
+    val packageName = trackingState.packageName
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
@@ -133,19 +134,18 @@ fun ActivityTrackerScreen() {
                 ) {
                     Text("Stop Tracking")
                 }
+            }
+
+            if (packageName != null) {
                 Spacer(Modifier.height(32.dp))
                 Text("Current Application", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(16.dp))
-                if (trackingState.packageName == null) {
-                    Text("Detecting...", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                } else {
-                    Text(displayName.orEmpty(), style = MaterialTheme.typography.headlineSmall)
-                    Spacer(Modifier.height(4.dp))
-                    Text(trackingState.packageName.orEmpty(), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    trackingState.activityName?.let {
-                        Spacer(Modifier.height(16.dp))
-                        Text(it, color = MaterialTheme.colorScheme.primary)
-                    }
+                Text(displayName.orEmpty(), style = MaterialTheme.typography.headlineSmall)
+                Spacer(Modifier.height(4.dp))
+                Text(packageName, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                trackingState.activityName?.let {
+                    Spacer(Modifier.height(16.dp))
+                    Text(it, color = MaterialTheme.colorScheme.primary)
                 }
             }
         }
