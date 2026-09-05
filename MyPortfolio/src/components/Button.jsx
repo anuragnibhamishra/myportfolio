@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { IconArrowUpRight } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 
 const MotionLink = motion.create(Link);
@@ -27,7 +27,7 @@ export default function Button({
     <>
       {children}
       {variant === "primary" ? (
-        <ArrowUpRight
+        <IconArrowUpRight
           size={17}
           strokeWidth={1.8}
           className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

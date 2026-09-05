@@ -1,22 +1,11 @@
 import { Link } from "react-router-dom";
-import { Mail } from "lucide-react";
 import { navItems, site } from "../data/site";
-
-function GitHubIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 .5C5.73.5.75 5.48.75 11.76c0 4.97 3.22 9.18 7.7 10.66.56.1.77-.24.77-.54v-1.9c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.73 1.16 1.73 1.16 1 .1.77 1.72 2.72 1.22.08-.76.39-1.22.71-1.5-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.1-2.98 0 0 .95-.3 3.1 1.15a10.7 10.7 0 0 1 5.64 0c2.15-1.45 3.1-1.15 3.1-1.15.6 1.55.22 2.7.1 2.98.72.79 1.16 1.79 1.16 3.02 0 4.32-2.64 5.28-5.15 5.55.4.35.76 1.03.76 2.08v3.08c0 .3.2.65.78.54 4.47-1.48 7.69-5.69 7.69-10.66C23.25 5.48 18.27.5 12 .5Z" />
-    </svg>
-  );
-}
-
-function LinkedInIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M5.2 3.5A2.2 2.2 0 1 1 .8 3.5a2.2 2.2 0 0 1 4.4 0ZM1 8h4.3v13H1V8Zm6.8 0H12v1.8h.1c.6-1.1 2-2.2 4.2-2.2 4.5 0 5.3 3 5.3 6.9V21h-4.3v-5.8c0-1.4 0-3.2-2-3.2s-2.3 1.5-2.3 3.1V21H7.8V8Z" />
-    </svg>
-  );
-}
+import {
+  IconBrandGithub,
+  IconBrandInstagram,
+  IconBrandLinkedin,
+  IconMail,
+} from "@tabler/icons-react";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -51,15 +40,19 @@ export default function Footer() {
             Elsewhere
           </p>
           <a href={site.github} className="inline-flex w-fit items-center gap-3 text-fg-2 transition-colors hover:text-accent" target="_blank" rel="noreferrer">
-            <GitHubIcon />
+            <IconBrandGithub size={24} strokeWidth={1.5} />
             <span>GitHub</span>
           </a>
+          <a href={site.instagram} className="inline-flex w-fit items-center gap-3 text-fg-2 transition-colors hover:text-accent" target="_blank" rel="noreferrer">
+            <IconBrandInstagram size={24} strokeWidth={1.5} />
+            <span>Instagram</span>
+          </a>
           <a href={site.linkedin} className="inline-flex w-fit items-center gap-3 text-fg-2 transition-colors hover:text-accent" target="_blank" rel="noreferrer">
-            <LinkedInIcon />
+            <IconBrandLinkedin size={24} strokeWidth={1.5} />
             <span>LinkedIn</span>
           </a>
           <a href={`mailto:${site.email}`} className="inline-flex w-fit items-center gap-3 text-fg-2 transition-colors hover:text-accent">
-            <Mail size={17} strokeWidth={1.5} />
+            <IconMail size={24} strokeWidth={1.5} />
             <span>Email</span>
           </a>
         </div>

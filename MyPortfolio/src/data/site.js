@@ -5,6 +5,7 @@ export const site = {
   email: "anuragjainathmishra@gmail.com",
   github: "https://github.com/anuragnibhamishra",
   linkedin: "https://www.linkedin.com/in/anuragnibhamishra/",
+  instagram: "https://www.instagram.com/anuragnibhamishra/",
   availability: "Available for opportunities",
 };
 

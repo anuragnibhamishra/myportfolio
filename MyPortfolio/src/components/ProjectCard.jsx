@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { IconArrowUpRight } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProjectCover from "./ProjectCover";
@@ -53,7 +53,7 @@ export default function ProjectCard({ project, layout = "default" }) {
             className="inline-flex items-center gap-1 text-sm text-fg transition-colors hover:text-accent"
           >
             View Project
-            <ArrowUpRight size={16} />
+            <IconArrowUpRight size={16} />
           </Link>
         </div>
       </div>

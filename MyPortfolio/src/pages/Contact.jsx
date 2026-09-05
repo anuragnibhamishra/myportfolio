@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { IconArrowUpRight } from "@tabler/icons-react";
 import ContactForm from "../components/ContactForm";
 import Reveal from "../components/Reveal";
 import Seo from "../components/Seo";
@@ -41,7 +41,7 @@ export default function Contact() {
                     rel={item.href.startsWith("http") ? "noreferrer" : undefined}
                   >
                     {item.value}
-                    <ArrowUpRight size={18} />
+                    <IconArrowUpRight size={18} />
                   </a>
                 </li>
               ))}

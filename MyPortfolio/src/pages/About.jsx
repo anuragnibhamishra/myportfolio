@@ -22,7 +22,7 @@ export default function About() {
               <img
                 src={portrait}
                 alt="Portrait of Anurag Mishra"
-                className="aspect-[4/5] w-full object-cover grayscale transition-[filter] duration-700 hover:grayscale-0"
+                className="aspect-4/5 w-full object-cover grayscale transition-[filter] duration-700 hover:grayscale-0"
               />
             </figure>
           </Reveal>

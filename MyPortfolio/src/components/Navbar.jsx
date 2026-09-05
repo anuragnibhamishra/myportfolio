@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { IconMenu2, IconX } from "@tabler/icons-react";
 import { navItems, site } from "../data/site";
 import Button from "./Button";
 
@@ -70,7 +70,7 @@ export default function Navbar() {
           aria-expanded={open}
           aria-label={open ? "Close menu" : "Open menu"}
         >
-          {open ? <X size={18} /> : <Menu size={18} />}
+          {open ? <IconX size={18} /> : <IconMenu2 size={18} />}
         </button>
       </nav>
 

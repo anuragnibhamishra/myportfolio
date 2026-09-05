@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { IconArrowDown, IconArrowUpRight } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Button from "../components/Button";
@@ -75,7 +75,7 @@ export default function Home() {
                 transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
                 aria-hidden="true"
               >
-                <ArrowDown size={17} className="text-accent" />
+                <IconArrowDown size={17} className="text-accent" />
               </motion.span>
               <span>Scroll</span>
             </motion.div>
@@ -95,7 +95,7 @@ export default function Home() {
                 className="inline-flex items-center gap-1 text-sm text-fg-2 transition-colors hover:text-accent"
               >
                 View All Projects
-                <ArrowUpRight size={16} />
+                <IconArrowUpRight size={16} />
               </Link>
             }
           />
@@ -188,7 +188,7 @@ export default function Home() {
             </p>
             <span className="mt-10 inline-flex items-center gap-2 rounded-md bg-accent hover:bg-[#C5FF99] px-6 py-4 text-[16px] font-medium text-surface transition-colors">
               Let&apos;s talk
-              <ArrowUpRight size={18} />
+              <IconArrowUpRight size={18} />
             </span>
           </a>
         </Reveal>
