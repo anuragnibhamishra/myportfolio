@@ -11,6 +11,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
+import { Analytics } from "@vercel/analytics/next"
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -48,6 +49,7 @@ export default function App() {
 
   return (
     <>
+      <Analytics />
       <div className="site-grid" aria-hidden />
       <div className="accent-glow" aria-hidden />
       <div className="grain" aria-hidden />

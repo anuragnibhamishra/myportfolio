@@ -6,8 +6,9 @@ import { site } from "../data/site";
 
 const channels = [
   { label: "Email", value: site.email, href: `mailto:${site.email}` },
-  { label: "GitHub", value: site.github, href: site.github },
-  { label: "LinkedIn", value: site.linkedin, href: site.linkedin },
+  { label: "GitHub", value: "github.com", href: site.github },
+  { label: "Instagram", value: "instagram.com", href: site.instagram },
+  { label: "LinkedIn", value: "linkedin.com", href: site.linkedin },
 ];
 
 export default function Contact() {
