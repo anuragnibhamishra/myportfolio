@@ -8,6 +8,33 @@ export const projectCategories = [
 
 export const projects = [
   {
+    id: "freshcart",
+
+    title: "FreshCart",
+
+    year: "2026",
+
+    category: "E-Commerce",
+
+    featured: true,
+
+    featuredLayout: "default",
+
+    description:
+      "A modern grocery shopping platform designed for a simple and seamless buying experience.",
+
+    longDescription:
+      "A full-stack e-commerce experience for browsing groceries, managing a cart, and placing orders with ease. Built with a focus on clean product discovery, responsive interactions, and a straightforward checkout experience.",
+
+    tech: ["React", "Node.js", "Express", "MongoDB"],
+
+    github: "https://github.com/anuragnibhamishra/freshcart",
+
+    live: "https://freshcart-omega-one.vercel.app/",
+
+    cover: "freshcart",
+  },
+  {
     id: "semicolon",
     title: "Semicolon",
     year: "2025",
@@ -103,33 +130,6 @@ export const projects = [
     live: "#",
     cover: "trace",
   },
-  {
-    id: "freshcart",
-
-    title: "FreshCart",
-
-    year: "2025",
-
-    category: "E-Commerce",
-
-    featured: false,
-
-    featuredLayout: "default",
-
-    description:
-      "A modern grocery shopping platform designed for a simple and seamless buying experience.",
-
-    longDescription:
-      "A full-stack e-commerce experience for browsing groceries, managing a cart, and placing orders with ease. Built with a focus on clean product discovery, responsive interactions, and a straightforward checkout experience.",
-
-    tech: ["React", "Node.js", "Express", "MongoDB"],
-
-    github: "https://github.com/",
-
-    live: "#",
-
-    cover: "freshcart",
-  }
 ];
 
 export const featuredProjects = projects.filter((project) => project.featured);

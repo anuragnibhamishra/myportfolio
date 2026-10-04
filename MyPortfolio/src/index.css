@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "./fonts.css";
 
 @theme {
   --color-surface: #0a0a0a;
@@ -9,7 +8,8 @@
   --color-fg-2: #e5e5e5;
   --color-fg-muted: #d1d1d1;
   --color-accent: #d6ffb7;
-  --font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 :root {
