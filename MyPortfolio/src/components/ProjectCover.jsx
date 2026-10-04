@@ -1,7 +1,7 @@
 const covers = {
-  semicolon: {
-    kicker: "01 / SOCIAL",
-    lines: ["feed.filter(dev)", "thread.open()", "ship quietly"],
+  freshcart: {
+    kicker: "01 / E-COMMERCE",
+    lines: ["cart.add()", "checkout.pay()", "order → deliver"],
   },
   binix: {
     kicker: "02 / CIVIC",
