@@ -2,6 +2,7 @@ export const projectCategories = [
   "All",
   "Web Apps",
   "Full Stack",
+  "E-Commerce",
   "UI / Experiments",
   "AI",
 ];

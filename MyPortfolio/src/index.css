@@ -94,7 +94,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 90;
+  z-index: 110;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   mix-blend-mode: difference;

@@ -1,26 +1,30 @@
 const covers = {
   freshcart: {
-    kicker: "01 / E-COMMERCE",
+    kicker: "01 / GROCERY",
+    lines: ["shop.smart()", "cart.sync()", "fresh.deliver()"],
+  },
+  semicolon: {
+    kicker: "02 / SOCIAL",
     lines: ["cart.add()", "checkout.pay()", "order → deliver"],
   },
   binix: {
-    kicker: "02 / CIVIC",
+    kicker: "03 / CIVIC",
     lines: ["route.optimize()", "city.collect()", "waste → signal"],
   },
   continuum: {
-    kicker: "03 / RITUAL",
+    kicker: "04 / RITUAL",
     lines: ["habit.streak += 1", "goal.horizon", "today → later"],
   },
   lumen: {
-    kicker: "04 / STUDY",
+    kicker: "05 / STUDY",
     lines: ["grid.breathe()", "type.measure", "motion.hold"],
   },
   aether: {
-    kicker: "05 / AI",
+    kicker: "06 / AI",
     lines: ["note → brief", "retrieve.context", "human.inLoop"],
   },
   trace: {
-    kicker: "06 / OPS",
+    kicker: "07 / OPS",
     lines: ["decision.log()", "why.shipped", "defer || do"],
   },
 };
