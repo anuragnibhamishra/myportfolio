@@ -183,7 +183,7 @@ portfolio-ecosystem/
 ## Deployment
 
 - Vercel — Frontend
-- Railway — Backend
+- Render — Backend
 
 ---
 
@@ -457,7 +457,7 @@ VITE_ACTIVITY_API_URL=http://localhost:5000
 For production:
 
 ```env
-VITE_ACTIVITY_API_URL=https://myportfolio-production-5da1.up.railway.app
+VITE_ACTIVITY_API_URL=https://your-render-service.onrender.com
 ```
 
 > Never commit `.env` files containing secrets. Use `.env.example` to document required variables.
@@ -466,7 +466,7 @@ VITE_ACTIVITY_API_URL=https://myportfolio-production-5da1.up.railway.app
 
 # 🌍 Production
 
-The frontend is deployed on Vercel and the backend is deployed on Railway.
+The frontend is deployed on Vercel and the backend is deployed on Render.
 
 ### Frontend
 
@@ -474,13 +474,15 @@ https://anuragnibhamishra.vercel.app/
 
 ### Backend
 
-https://myportfolio-production-5da1.up.railway.app/
+https://your-render-service.onrender.com/
 
 ### Backend Health Check
 
 ```text
 /api/health
 ```
+
+Example Render deployment configuration is included in [render.yaml](./render.yaml).
 
 ---
 
@@ -653,7 +655,7 @@ Building this project involved working across multiple layers of a software syst
 - CORS configuration
 - Environment variables
 - Production deployment
-- Vercel + Railway integration
+- Vercel + Render integration
 - Debugging network connectivity
 - APK generation and release
 

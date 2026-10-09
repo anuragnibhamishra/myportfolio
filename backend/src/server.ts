@@ -5,6 +5,7 @@ import { activityService } from "./services/activity.service";
 import { socketService } from "./services/socket.service";
 
 const httpServer = createServer(app);
+const PORT = Number(process.env.PORT) || env.port;
 
 socketService.setCurrentActivityProvider(() => activityService.getCurrentActivity());
 socketService.initialize(httpServer);
@@ -14,6 +15,6 @@ httpServer.on("error", (error) => {
   process.exitCode = 1;
 });
 
-httpServer.listen(env.port, "0.0.0.0", () => {
-  console.info(`Activity Tracker API listening on port ${env.port}`);
+httpServer.listen(PORT, "0.0.0.0", () => {
+  console.info(`Activity Tracker API listening on port ${PORT}`);
 });

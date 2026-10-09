@@ -4,11 +4,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkConfig {
-    // Production is the default for physical-device builds.
-    const val BASE_URL = "https://myportfolio-production-5da1.up.railway.app/"
+    // Update this to your Render backend URL before release builds.
+    const val BASE_URL = "https://your-render-service.onrender.com/"
 
-    // Development fallback for a local server on the Android emulator or LAN device.
-    const val LOCAL_BASE_URL = "http://localhost:5000/"
+    // Development fallback for a local server on the Android emulator.
+    const val LOCAL_BASE_URL = "http://10.0.2.2:5000/"
 }
 
 object ActivityApiClient {

@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: activity-tracker-backend
+    env: node
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ALLOWED_ORIGIN
+        value: https://anuragnibhamishra.vercel.app

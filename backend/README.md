@@ -14,7 +14,7 @@ Adjust `.env` if needed:
 
 ```env
 PORT=5000
-ALLOWED_ORIGIN=http://localhost:5173
+ALLOWED_ORIGIN=http://localhost:5173,https://your-portfolio-domain.example,https://your-render-service.onrender.com
 ```
 
 `ALLOWED_ORIGIN` accepts a comma-separated list of specific origins. Do not use `*` for production.
@@ -46,11 +46,13 @@ The default server URL is `http://localhost:5000`. The server binds to `0.0.0.0`
 Set the required environment variables in the hosting platform:
 
 ```env
-PORT=5000
-ALLOWED_ORIGIN=https://your-portfolio-domain.example
+PORT=10000
+ALLOWED_ORIGIN=https://your-portfolio-domain.example,https://your-render-service.onrender.com
 ```
 
 `PORT` is supplied by most hosting platforms and falls back to `5000` locally. `ALLOWED_ORIGIN` must contain one or more comma-separated `http` or `https` origins. Wildcard origins are not accepted.
+
+For Render, set `PORT` to the port Render assigns automatically or use the default `10000` in configuration examples.
 
 Build and start the compiled server:
 
